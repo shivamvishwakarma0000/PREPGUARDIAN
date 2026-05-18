@@ -17,8 +17,17 @@ import { signOut } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { GoogleLogo, YoutubeLogo, ChromeLogo } from "@/components/Icons";
 
+import { useRouter } from "next/navigation";
+
 export default function Dashboard() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/");
+    }
+  }, [status, router]);
   
   // Profile & Gamification state
   const [profile, setProfile] = useState<any>(null);
