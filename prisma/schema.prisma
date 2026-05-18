@@ -42,6 +42,7 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
+  recoveryCode  String?
   accounts      Account[]
   sessions      Session[]
   profile       Profile?

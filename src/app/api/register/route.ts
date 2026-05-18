@@ -30,12 +30,16 @@ export async function POST(req: Request) {
     // Securely hash password using SHA-256
     const hashedPassword = hashPassword(password);
 
+    // Generate secure recovery clearance code
+    const recoveryCode = `PG-${Math.floor(100000 + Math.random() * 900000)}`;
+
     // Create user and profile inside a single transaction
     const newUser = await prisma.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
+        recoveryCode,
         profile: {
           create: {
             xp: 0,
@@ -50,10 +54,15 @@ export async function POST(req: Request) {
         id: true,
         name: true,
         email: true,
+        recoveryCode: true,
       },
     });
 
-    return NextResponse.json({ user: newUser, message: "Enlistment successful! You may now sign in." });
+    return NextResponse.json({ 
+      user: newUser, 
+      recoveryCode,
+      message: "Enlistment successful! Write down your Clearance Recovery Code." 
+    });
 
   } catch (error: any) {
     console.error("Enlistment Registration Error:", error);
