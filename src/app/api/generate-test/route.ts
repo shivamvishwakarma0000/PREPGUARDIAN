@@ -5,7 +5,7 @@ import OpenAI from "openai";
 import { prisma } from "@/lib/prisma";
 
 const openai = new OpenAI({
-  apiKey: process.env.AI_API_KEY || process.env.OPENAI_API_KEY,
+  apiKey: process.env.AI_API_KEY || process.env.OPENAI_API_KEY || "dummy-key-for-build",
   baseURL: process.env.AI_BASE_URL || undefined,
 });
 
