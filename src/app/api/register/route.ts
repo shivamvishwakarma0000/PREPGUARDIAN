@@ -24,7 +24,45 @@ export async function POST(req: Request) {
     });
 
     if (existingUser) {
-      return NextResponse.json({ error: "This email is already enlisted." }, { status: 400 });
+      if (existingUser.password) {
+        return NextResponse.json({ error: "This email is already enlisted." }, { status: 400 });
+      }
+
+      // Google OAuth account upgrade flow
+      const hashedPassword = hashPassword(password);
+      const recoveryCode = `PG-${Math.floor(100000 + Math.random() * 900000)}`;
+
+      await prisma.user.update({
+        where: { id: existingUser.id },
+        data: {
+          password: hashedPassword,
+          recoveryCode,
+        },
+      });
+
+      // Maintain profile consistency
+      const existingProfile = await prisma.profile.findUnique({
+        where: { userId: existingUser.id },
+      });
+
+      if (!existingProfile) {
+        await prisma.profile.create({
+          data: {
+            userId: existingUser.id,
+            xp: 0,
+            level: 1,
+            currentStreak: 0,
+            rankTitle: "Cadet",
+            coins: 100,
+          },
+        });
+      }
+
+      return NextResponse.json({
+        user: { id: existingUser.id, name: existingUser.name, email: existingUser.email, recoveryCode },
+        recoveryCode,
+        message: "Google Account successfully upgraded to password access! Save your recovery key."
+      });
     }
 
     // Securely hash password using SHA-256
