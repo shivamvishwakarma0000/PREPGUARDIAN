@@ -4,7 +4,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShieldAlert, Crosshair, BrainCircuit, Activity, User, Mail, Lock, ArrowRight, ShieldCheck, KeyRound, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { ShieldAlert, Crosshair, BrainCircuit, Activity, User, Mail, Lock, ArrowRight, ShieldCheck, KeyRound, AlertTriangle, CheckCircle2, Award, Landmark } from "lucide-react";
 
 export default function LandingPage() {
   const { data: session, status } = useSession();
@@ -42,7 +42,6 @@ export default function LandingPage() {
 
     try {
       if (authMode === "register") {
-        // Enlist new cadet
         if (!name || !email || !password) {
           setError("Name, email, and password are required for enlistment.");
           setLoading(false);
@@ -61,16 +60,13 @@ export default function LandingPage() {
           throw new Error(data.error || "Failed to enlist cadet.");
         }
 
-        // Show the recovery code clearance modal
         setGeneratedClearanceCode(data.recoveryCode);
         setShowRecoveryModal(true);
         
-        // Reset fields
         setName("");
         setEmail("");
         setPassword("");
       } else if (authMode === "forgot") {
-        // Reset password using recovery key
         if (!email || !recoveryCodeInput || !password) {
           setError("Email, recovery key, and new password are required.");
           setLoading(false);
@@ -94,7 +90,6 @@ export default function LandingPage() {
         setRecoveryCodeInput("");
         setPassword("");
       } else {
-        // Standard log in
         if (!email || !password) {
           setError("Email and password are required to access.");
           setLoading(false);
@@ -124,232 +119,281 @@ export default function LandingPage() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center relative overflow-y-auto py-12 bg-[var(--color-obsidian-900)]">
-      {/* Background Ornaments */}
-      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-[var(--color-gold-600)] blur-[150px] opacity-10 rounded-full mix-blend-screen pointer-events-none"></div>
-      <div className="absolute bottom-[-20%] right-[-10%] w-[40%] h-[40%] bg-[var(--color-gold-500)] blur-[150px] opacity-10 rounded-full mix-blend-screen pointer-events-none"></div>
+    <main className="min-h-screen flex flex-col lg:flex-row relative overflow-hidden bg-[var(--color-obsidian-900)]">
+      {/* Background Glows */}
+      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-[var(--color-gold-600)] blur-[180px] opacity-10 rounded-full mix-blend-screen pointer-events-none"></div>
+      <div className="absolute bottom-[-20%] right-[-10%] w-[40%] h-[40%] bg-[var(--color-gold-500)] blur-[180px] opacity-10 rounded-full mix-blend-screen pointer-events-none"></div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="z-10 flex flex-col items-center text-center max-w-4xl px-6 w-full"
-      >
+      {/* Left Column: Branding, UPSC/SSC Context, Motivational Quote & Auth Form */}
+      <div className="w-full lg:w-1/2 flex flex-col justify-start lg:justify-center px-6 sm:px-12 lg:px-16 py-12 lg:py-8 z-10 overflow-y-auto max-h-screen">
         <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-          className="mb-4 p-4 rounded-full glass-panel"
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="w-full max-w-lg mx-auto lg:mx-0 flex flex-col"
         >
-          <ShieldAlert className="w-12 h-12 text-[var(--color-gold-500)]" />
-        </motion.div>
+          {/* Logo Brand */}
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-2 rounded-xl bg-[var(--color-gold-500)]/10 border border-[var(--color-gold-500)]/30">
+              <ShieldAlert className="w-8 h-8 text-[var(--color-gold-500)] text-glow-gold" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-extrabold tracking-wider text-glow-gold text-white uppercase">
+                PREPGUARDIAN
+              </h1>
+              <p className="text-xs text-[var(--color-gold-400)] tracking-widest font-mono uppercase">
+                Digital Subedar Portal
+              </p>
+            </div>
+          </div>
 
-        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-2 text-glow-gold text-white">
-          PREPGUARDIAN
-        </h1>
-        <h2 className="text-xl md:text-2xl font-medium text-[var(--color-gold-400)] mb-8 tracking-wide uppercase">
-          Digital Subedar Portal
-        </h2>
+          {/* UPSC & SSC High-Stakes Banner */}
+          <div className="glass-panel p-5 rounded-2xl border border-[var(--color-gold-500)]/15 mb-6 text-left relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-2 text-white/5 pointer-events-none">
+              <Landmark className="w-16 h-16" />
+            </div>
+            <h3 className="text-sm font-bold text-white mb-2 uppercase tracking-wide flex items-center gap-2">
+              <Award className="w-4 h-4 text-[var(--color-gold-400)]" />
+              UPSC CSE & SSC CGL Focus Enforcer
+            </h3>
+            <p className="text-xs text-gray-400 leading-relaxed">
+              India's toughest competitive exams demand extreme mental discipline. PrepGuardian actively locks down your environment, monitors focus sessions, and lets you enlist under the Digital Subedar's direct academic guidance to guarantee absolute success.
+            </p>
+          </div>
 
-        {/* Dynamic Authentication Frame */}
-        <div className="w-full max-w-md glass-panel p-8 rounded-3xl border border-[var(--color-gold-500)]/20 mb-8 text-left relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none"></div>
-          
-          <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-            {authMode === "forgot" ? (
-              <>
-                <KeyRound className="w-5 h-5 text-[var(--color-gold-400)]" />
-                "Cadet Key Reset (Forgot Password)"
-              </>
-            ) : authMode === "register" ? (
-              <>
-                <ShieldCheck className="w-5 h-5 text-[var(--color-gold-400)]" />
-                "Cadet Enlistment (Register)"
-              </>
-            ) : (
-              <>
-                <ShieldCheck className="w-5 h-5 text-[var(--color-gold-400)]" />
-                "Military Sign-In (Login)"
-              </>
-            )}
-          </h3>
+          {/* Luxury Quote Panel */}
+          <div className="pl-4 border-l-2 border-[var(--color-gold-500)]/50 mb-8 text-left">
+            <p className="text-sm italic text-gray-300 leading-relaxed font-medium">
+              "The steel frame of India's administration demands absolute temper, not fragile focus. Let discipline carve your path to the academy."
+            </p>
+            <p className="text-xs text-[var(--color-gold-400)] uppercase font-bold tracking-widest mt-2 font-mono">
+              — Sardar Vallabhbhai Patel
+            </p>
+          </div>
 
-          <AnimatePresence mode="wait">
-            {error && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm"
-              >
-                {error}
-              </motion.div>
-            )}
+          {/* Authentication Card */}
+          <div className="w-full glass-panel p-6 sm:p-8 rounded-3xl border border-[var(--color-gold-500)]/20 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none"></div>
+            
+            <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+              {authMode === "forgot" ? (
+                <>
+                  <KeyRound className="w-5 h-5 text-[var(--color-gold-400)]" />
+                  Cadet Key Reset
+                </>
+              ) : authMode === "register" ? (
+                <>
+                  <ShieldCheck className="w-5 h-5 text-[var(--color-gold-400)]" />
+                  Cadet Enlistment (Register)
+                </>
+              ) : (
+                <>
+                  <ShieldCheck className="w-5 h-5 text-[var(--color-gold-400)]" />
+                  Military Sign-In (Login)
+                </>
+              )}
+            </h3>
 
-            {success && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="mb-4 p-3 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 text-sm"
-              >
-                {success}
-              </motion.div>
-            )}
-          </AnimatePresence>
+            <AnimatePresence mode="wait">
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm"
+                >
+                  {error}
+                </motion.div>
+              )}
 
-          <form onSubmit={handleCredentialsAuth} className="space-y-4">
-            {authMode === "register" && (
+              {success && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="mb-4 p-3 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 text-sm"
+                >
+                  {success}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <form onSubmit={handleCredentialsAuth} className="space-y-4">
+              {authMode === "register" && (
+                <div>
+                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Full Name</label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+                      <User className="w-4 h-4" />
+                    </span>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Enter your name"
+                      className="w-full bg-white/5 border border-white/10 hover:border-[var(--color-gold-500)]/30 focus:border-[var(--color-gold-500)] focus:ring-1 focus:ring-[var(--color-gold-500)] text-white placeholder-gray-500 rounded-xl pl-10 pr-4 py-3 outline-none transition-all"
+                      required
+                    />
+                  </div>
+                </div>
+              )}
+
               <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Full Name</label>
+                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Cadet Email Address</label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
-                    <User className="w-4 h-4" />
+                    <Mail className="w-4 h-4" />
                   </span>
                   <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Enter your name"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="name@example.com"
                     className="w-full bg-white/5 border border-white/10 hover:border-[var(--color-gold-500)]/30 focus:border-[var(--color-gold-500)] focus:ring-1 focus:ring-[var(--color-gold-500)] text-white placeholder-gray-500 rounded-xl pl-10 pr-4 py-3 outline-none transition-all"
                     required
                   />
                 </div>
               </div>
-            )}
 
-            <div>
-              <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Cadet Email Address</label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
-                  <Mail className="w-4 h-4" />
-                </span>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@example.com"
-                  className="w-full bg-white/5 border border-white/10 hover:border-[var(--color-gold-500)]/30 focus:border-[var(--color-gold-500)] focus:ring-1 focus:ring-[var(--color-gold-500)] text-white placeholder-gray-500 rounded-xl pl-10 pr-4 py-3 outline-none transition-all"
-                  required
-                />
-              </div>
-            </div>
+              {authMode === "forgot" && (
+                <div>
+                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Clearance Recovery Code</label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+                      <KeyRound className="w-4 h-4" />
+                    </span>
+                    <input
+                      type="text"
+                      value={recoveryCodeInput}
+                      onChange={(e) => setRecoveryCodeInput(e.target.value)}
+                      placeholder="PG-XXXXXX"
+                      className="w-full bg-white/5 border border-white/10 hover:border-[var(--color-gold-500)]/30 focus:border-[var(--color-gold-500)] focus:ring-1 focus:ring-[var(--color-gold-500)] text-white placeholder-gray-500 rounded-xl pl-10 pr-4 py-3 outline-none transition-all"
+                      required
+                    />
+                  </div>
+                </div>
+              )}
 
-            {authMode === "forgot" && (
               <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Clearance Recovery Code</label>
+                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                  {authMode === "forgot" ? "New Access Key (Password)" : "Access Key (Password)"}
+                </label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
-                    <KeyRound className="w-4 h-4" />
+                    <Lock className="w-4 h-4" />
                   </span>
                   <input
-                    type="text"
-                    value={recoveryCodeInput}
-                    onChange={(e) => setRecoveryCodeInput(e.target.value)}
-                    placeholder="PG-XXXXXX"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Min 6 characters"
                     className="w-full bg-white/5 border border-white/10 hover:border-[var(--color-gold-500)]/30 focus:border-[var(--color-gold-500)] focus:ring-1 focus:ring-[var(--color-gold-500)] text-white placeholder-gray-500 rounded-xl pl-10 pr-4 py-3 outline-none transition-all"
                     required
                   />
                 </div>
               </div>
-            )}
 
-            <div>
-              <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-                {authMode === "forgot" ? "New Access Key (Password)" : "Access Key (Password)"}
-              </label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
-                  <Lock className="w-4 h-4" />
-                </span>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Min 6 characters"
-                  className="w-full bg-white/5 border border-white/10 hover:border-[var(--color-gold-500)]/30 focus:border-[var(--color-gold-500)] focus:ring-1 focus:ring-[var(--color-gold-500)] text-white placeholder-gray-500 rounded-xl pl-10 pr-4 py-3 outline-none transition-all"
-                  required
-                />
-              </div>
-            </div>
+              <button
+                type="submit"
+                disabled={loading || status === "loading"}
+                className="w-full py-4 bg-[var(--color-gold-500)] hover:bg-[var(--color-gold-600)] text-black font-bold rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-[var(--color-gold-500)]/10 disabled:opacity-55"
+              >
+                {loading ? "Processing..." : authMode === "forgot" ? "RESET SECURITY CLEARANCE" : authMode === "register" ? "ENLIST AS CADET" : "ACCESS SECURE PORTAL"}
+                {!loading && <ArrowRight className="w-4 h-4" />}
+              </button>
+            </form>
 
-            <button
-              type="submit"
-              disabled={loading || status === "loading"}
-              className="w-full py-4 bg-[var(--color-gold-500)] hover:bg-[var(--color-gold-600)] text-black font-bold rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-[var(--color-gold-500)]/10 disabled:opacity-55"
-            >
-              {loading ? "Processing..." : authMode === "forgot" ? "RESET SECURITY CLEARANCE" : authMode === "register" ? "ENLIST AS CADET" : "ACCESS SECURE PORTAL"}
-              {!loading && <ArrowRight className="w-4 h-4" />}
-            </button>
-          </form>
-
-          {/* Dynamic Switch Options */}
-          <div className="mt-6 space-y-3 text-center">
-            {authMode === "login" ? (
-              <>
+            {/* Dynamic Switch Options */}
+            <div className="mt-6 space-y-3 text-center">
+              {authMode === "login" ? (
+                <>
+                  <div>
+                    <button
+                      onClick={() => {
+                        setAuthMode("register");
+                        setError("");
+                        setSuccess("");
+                      }}
+                      className="text-sm text-[var(--color-gold-400)] hover:text-[var(--color-gold-300)] transition-colors underline decoration-dotted underline-offset-4"
+                    >
+                      Need credentials? Enlist as a new cadet
+                    </button>
+                  </div>
+                  <div>
+                    <button
+                      onClick={() => {
+                        setAuthMode("forgot");
+                        setError("");
+                        setSuccess("");
+                      }}
+                      className="text-xs text-gray-400 hover:text-gray-300 transition-colors"
+                    >
+                      Forgot Password?
+                    </button>
+                  </div>
+                </>
+              ) : (
                 <div>
                   <button
                     onClick={() => {
-                      setAuthMode("register");
+                      setAuthMode("login");
                       setError("");
                       setSuccess("");
                     }}
                     className="text-sm text-[var(--color-gold-400)] hover:text-[var(--color-gold-300)] transition-colors underline decoration-dotted underline-offset-4"
                   >
-                    Need credentials? Enlist as a new cadet
+                    Return to Cadet Login Screen
                   </button>
                 </div>
-                <div>
-                  <button
-                    onClick={() => {
-                      setAuthMode("forgot");
-                      setError("");
-                      setSuccess("");
-                    }}
-                    className="text-xs text-gray-400 hover:text-gray-300 transition-colors"
-                  >
-                    Forgot Password?
-                  </button>
-                </div>
-              </>
-            ) : (
-              <div>
-                <button
-                  onClick={() => {
-                    setAuthMode("login");
-                    setError("");
-                    setSuccess("");
-                  }}
-                  className="text-sm text-[var(--color-gold-400)] hover:text-[var(--color-gold-300)] transition-colors underline decoration-dotted underline-offset-4"
-                >
-                  Return to Cadet Login Screen
-                </button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
+        </motion.div>
+      </div>
 
-        {/* Feature Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-3xl">
-          {[
-            { icon: <Crosshair />, title: "Focus Kiosk", desc: "Strict fullscreen environment" },
-            { icon: <Activity />, title: "Discipline Engine", desc: "Active distraction penalties" },
-            { icon: <BrainCircuit />, title: "AI Mentor", desc: "Ruthless academic guidance" },
-          ].map((feature, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 + idx * 0.1, duration: 0.5 }}
-              className="glass-panel p-6 rounded-2xl flex flex-col items-center text-center border border-[var(--color-gold-500)]/20"
-            >
-              <div className="text-[var(--color-gold-400)] mb-4">{feature.icon}</div>
-              <h3 className="text-white font-bold mb-2">{feature.title}</h3>
-              <p className="text-gray-400 text-sm">{feature.desc}</p>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
+      {/* Right Column: High-End Determined Aspirant Illustration */}
+      <div className="w-full lg:w-1/2 relative min-h-[40vh] lg:min-h-screen flex items-center justify-center p-8 bg-[var(--color-obsidian-950)] border-t lg:border-t-0 lg:border-l border-white/5">
+        <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-obsidian-900)] to-transparent z-10 hidden lg:block pointer-events-none"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-obsidian-900)] to-transparent z-10 lg:hidden pointer-events-none"></div>
+        
+        {/* Dynamic Glowing Accents behind image */}
+        <div className="absolute top-[25%] left-[25%] w-[50%] h-[50%] bg-[var(--color-gold-500)]/15 blur-[120px] rounded-full animate-pulse pointer-events-none"></div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.3, duration: 0.8 }}
+          className="relative z-0 w-full max-w-md lg:max-w-lg aspect-square rounded-3xl overflow-hidden shadow-2xl border border-[var(--color-gold-500)]/20 hover:border-[var(--color-gold-500)]/40 transition-all group"
+        >
+          {/* Main Cadet Image */}
+          <img
+            src="/student.png"
+            alt="Determined Cadet studying for UPSC and SSC with holographic screens under PrepGuardian supervision"
+            className="w-full h-full object-cover grayscale-[15%] group-hover:scale-105 group-hover:grayscale-0 transition-all duration-700"
+          />
+
+          {/* Vignette Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent pointer-events-none"></div>
+
+          {/* Floating Badges inside Image */}
+          <div className="absolute bottom-6 left-6 right-6 flex flex-col gap-2 pointer-events-none">
+            <div className="flex gap-2">
+              <span className="px-3 py-1 bg-black/75 border border-[var(--color-gold-500)]/30 rounded-full text-[10px] font-bold text-[var(--color-gold-400)] uppercase tracking-wider font-mono">
+                UPSC Civil Services
+              </span>
+              <span className="px-3 py-1 bg-black/75 border border-[var(--color-gold-500)]/30 rounded-full text-[10px] font-bold text-[var(--color-gold-400)] uppercase tracking-wider font-mono">
+                SSC CGL
+              </span>
+            </div>
+            <h4 className="text-white font-bold text-lg leading-tight text-shadow">
+              Digital Subedar Focus Chamber
+            </h4>
+            <p className="text-xs text-gray-300">
+              Where focus is non-negotiable and success is forged.
+            </p>
+          </div>
+        </motion.div>
+      </div>
 
       {/* Recovery Code Clearance Modal (Undismissable until acknowledged) */}
       <AnimatePresence>
